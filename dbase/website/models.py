@@ -18,8 +18,28 @@ class Profile(models.Model):
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)
 
-    def profile_status(self):
-        if self.profileFilled == 0:
-            return False
-        else:
-            return True
+
+class Doctor(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    organization = models.CharField(max_length=250)
+    speciality = models.CharField(max_length=250)
+    rating = models.IntegerField(default=0)
+    phoneNumber = models.IntegerField(default=1234567890)
+    address = models.CharField(max_length=250,default=None)
+
+    def __str__(self):
+        return str(self.user.username)
+
+class specialities(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    speciality_name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return str(self.speciality_name)
+
+class insurances(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    insurance_name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return str(self.insurance_name)

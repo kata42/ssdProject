@@ -29,5 +29,4 @@ urlpatterns = [
  url(r'^register/$', views.register, name='register'),
  url(r'^about/$', views.about, name='about'),
  url(r'^edit/$', views.edit, name='edit'),
-
 ]

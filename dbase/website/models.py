@@ -28,6 +28,7 @@ class dummyDoctor(models.Model):
     rating = models.IntegerField(default=0)
     phoneNumber = models.IntegerField(default=1234567890)
     address = models.CharField(max_length=250,default=None)
+    digit = models.CharField(max_length=250,default=None)
 
 class Doctor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)

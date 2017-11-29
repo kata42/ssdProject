@@ -32,6 +32,7 @@
 </head>
 <body>
   <div class="container-fluid" id="logo-banner">
+
      <h1 style=" text-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);" class="lead" id="header-title">GIATROS</h1>
   </div>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -42,6 +43,7 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
+      {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url "index" %}">Home</a>
         </li>
@@ -51,7 +53,16 @@
         <li class="nav-item">
           <a class="nav-link" href="#">My HealthRecords</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url "edit" %}">My Profile</a>
+        </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "index" %}">Home</a>
+      </li>
+      {% endif %}
       </ul>
+
        <ul class="nav navbar-nav navbar-right">
                {% if user.is_authenticated %}
                <li class="nav-item">

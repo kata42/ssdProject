@@ -3,3 +3,7 @@
 .helptext{
   visibility: hidden;
 }
+
+#imageFloater{
+  float:right;
+}

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, SearchForm
 from django.contrib.auth.decorators import login_required
-from .models import Profile, dummyDoctor
+from .models import Profile, dummyDoctor, Doctor
 from django.contrib import messages
 from django.core.files import File
 import googlemaps
@@ -73,6 +73,17 @@ def phn():
         n = str(random.randint(10**9, 10**10-1))
     return n[:3] + '-' + n[3:6] + '-' + n[6:]
 
+def isSpeciality(theFilter):
+    if (theFilter in specialities):
+        return True
+    else:
+        return False
+
+def isInsurance(theFilter):
+    if (theFilter in insurances):
+        return True
+    else:
+        return False
 
 def index(request):
     search_form = SearchForm(auto_id=False)
@@ -80,6 +91,8 @@ def index(request):
         search_form =  SearchForm(request.POST)
         if search_form.is_valid():
             inputAddress = search_form.cleaned_data['search']#Search Term
+            theFilter = search_form.cleaned_data['attribute']#Search Term
+            print("The filter is:",theFilter)
             hPlace = 'hospital'
             # Geocoding an address
             gmaps = googlemaps.Client(key='AIzaSyAYCiTaPolA8Y-JbDjXTmfpjuJ-FaJAR8Q')
@@ -89,7 +102,10 @@ def index(request):
             derLocation = []
             derLocation.append(derived.latitude)
             derLocation.append(derived.longitude)
-            result = gmaps.places_nearby(derLocation, radius=1500, type=hPlace)
+            if isinstance(theFilter, (int, float)) and theFilter >= 1000 :
+                result = gmaps.places_nearby(derLocation, radius=theFilter, type=hPlace)
+            else:
+                result = gmaps.places_nearby(derLocation, radius=1500, type=hPlace)
             j = json.loads(json.dumps(result))
             jsonData = j["results"]
             doctors = []
@@ -101,7 +117,16 @@ def index(request):
                 vicinity = item.get("vicinity")#address
                 rtng = random.randint(0, 5)
                 phone_number = phn()
-                doctors.append(dummyDoctor(fullname = fullname, organization = name,specialization = speciality,insurance = ins,rating = rtng, phoneNumber = phone_number,address = vicinity))
+                num = random.randint(1, 300)
+                print("The filter is:",theFilter)
+                print("The spec is:",isSpeciality(theFilter))
+                print("The insur is:",isInsurance(theFilter))
+                if (isSpeciality(theFilter) and speciality == theFilter):
+                    doctors.append(dummyDoctor(fullname = fullname, organization = name,specialization = speciality,insurance = ins,rating = rtng, phoneNumber = phone_number,address = vicinity, digit = num ))
+                if (isInsurance(theFilter) and ins == theFilter):
+                    doctors.append(dummyDoctor(fullname = fullname, organization = name,specialization = speciality,insurance = ins,rating = rtng, phoneNumber = phone_number,address = vicinity, digit = num))
+                if (isinstance(theFilter, (int, float))):
+                    doctors.append(dummyDoctor(fullname = fullname, organization = name,specialization = speciality,insurance = ins,rating = rtng, phoneNumber = phone_number,address = vicinity, digit = num))
             return render(request, 'account/index.html',{'search_form': search_form,'doctors': doctors,})
     return render(request,'account/index.html',{'search_form': search_form})
 

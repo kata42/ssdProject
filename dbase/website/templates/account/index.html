@@ -3,46 +3,34 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<!--<div id="locationField">
-  <input id="autocomplete" placeholder="Enter Speciality or Your current Address"
-         onFocus="geolocate()" type="text"></input>
-</div>-->
 <div class="row">
   <div class="col-lg-3 center-block">
     <div class="input-group">
-      <input id="autocomplete" type="text" class="form-control" placeholder="Enter Speciality or Your current Address" onfocus="geolocate()">
-      <span class="input-group-btn">
-             <button class="btn btn-default" type="button">Go!</button>
-         </span>
+       <form action="." method="post" enctype="multipart/form-data">
+          {{ search_form.as_p }}
+          {% csrf_token %}
+          <input type="submit" value="Go">
+      </form>
     </div>
     <!-- /input-group -->
   </div>
   <!-- /.col-lg-6 -->
 </div>
-<script>
-var placeSearch, autocomplete;
-var componentForm = {
-  street_number: 'short_name',
-  route: 'long_name',
-  locality: 'long_name',
-  administrative_area_level_1: 'short_name',
-  country: 'long_name',
-  postal_code: 'short_name'
-};
-
-function initAutocomplete() {
-  // Create the autocomplete object, restricting the search to geographical
-  // location types.
-  autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-      {types: ['geocode']});
-
-  // When the user selects an address from the dropdown, populate the address
-  // fields in the form.
-  autocomplete.addListener('place_changed', fillInAddress);
-}
-
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYCiTaPolA8Y-JbDjXTmfpjuJ-FaJAR8Q&libraries=places&callback=initAutocomplete"
-    async defer></script>
+{% for doctor in doctors %}
+<div class="w-75 mx-auto">
+  <div style=" box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);"
+        class="card w-100 bg-dark text-secondary mb-3">
+    <div class="card-header bg-dark text-secondary">{{ doctor.address }}
+    </div>
+    <div class="card-body">
+    <h4 class="card-title text-info">{{ doctor.fullname }}</h4>
+    <p class="card-text">Organization:{{ doctor.organization }}</p>
+    <p class="card-text">Specialization:{{ doctor.specialization }}</p>
+    <p class="card-text">Rating:{{ doctor.rating }}</p>
+    <a style="text-dark" href="#" class="btn btn-raised active btn-info">Make an Appointment</a>
+  </div>
+</div>
+<br>
+</div>
+{% endfor %}
 {% endblock %}

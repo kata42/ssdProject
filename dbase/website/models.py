@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db import models
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
@@ -18,28 +20,24 @@ class Profile(models.Model):
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)
 
-
-class Doctor(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+class dummyDoctor(models.Model):
+    fullname = models.CharField(max_length=250)
     organization = models.CharField(max_length=250)
-    speciality = models.CharField(max_length=250)
+    specialization = models.CharField(max_length=250,default=None)
+    insurance = models.CharField(max_length=250,default=None)
     rating = models.IntegerField(default=0)
     phoneNumber = models.IntegerField(default=1234567890)
     address = models.CharField(max_length=250,default=None)
 
+class Doctor(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    organization = models.CharField(max_length=250)
+    specialization = models.CharField(max_length=250,default=None)
+    insurance = models.CharField(max_length=250,default=None)
+    rating = models.IntegerField(default=0)
+    phoneNumber = models.IntegerField(default=1234567890)
+    address = models.CharField(max_length=250,default=None)
+
+
     def __str__(self):
         return str(self.user.username)
-
-class specialities(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    speciality_name = models.CharField(max_length=250)
-
-    def __str__(self):
-        return str(self.speciality_name)
-
-class insurances(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    insurance_name = models.CharField(max_length=250)
-
-    def __str__(self):
-        return str(self.insurance_name)
